@@ -31,8 +31,11 @@ class CMSLatestEntriesPlugin(CMSPluginBase):
             qs = qs.filter(**kw)
             
         if instance.tagged:
-            tags = get_tag_list(instance.tagged)
-            qs  = TaggedItem.objects.get_by_model(qs , tags)
+            if instance.tagged != "NOT_TAGGED":
+                tags = get_tag_list(instance.tagged)
+                qs = TaggedItem.objects.get_by_model(qs , tags)
+            else:
+                qs = qs.filter(tags='')
             
         latest = qs[:instance.limit]
         
